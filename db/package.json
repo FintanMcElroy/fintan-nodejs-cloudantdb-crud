@@ -1,0 +1,13 @@
+{
+	"name": "DBUtils",
+	"version": "0.0.1",
+	"description": "Cloudant DB calls wrapper",
+	"dependencies": {
+		"cloudant": "1.6.2",
+		"request": "*"
+	},
+	"repository": {},
+	"engines": {
+		"node": "4.x"
+	}
+}

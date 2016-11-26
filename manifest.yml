@@ -1,14 +1,11 @@
-declared-services:
-  cloudant-nodejs:
-    label: cloudantNoSQLDB
-    plan: Shared
 applications:
 - path: .
-  memory: 256M
+  memory: 128M
   instances: 1
   domain: mybluemix.net
-  name: NodeJSCloudantSampleApp
-  host: NodeJSCloudantSampleApp
-  disk_quota: 1024M
+  name: fintan-nodejs-cloudantdb-crud
+  host: fintan-nodejs-cloudantdb-crud
+  disk_quota: 256M
   services:
-  - cloudant-nodejs
+  - fintanNodeRED-cloudantNoSQLDB
+  - fintan-sso

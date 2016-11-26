@@ -1,5 +1,5 @@
 {
-	"name": "NodejsCloudantExample",
+	"name": "fintan-nodejs-cloudantdb-crud",
 	"version": "0.0.1",
 	"description": "Nodejs app using CloudantDB",
 	"scripts": {
@@ -8,17 +8,10 @@
 	"dependencies": {
 		"express": "4.12.x",
 		"cfenv": "1.0.x",
-		"async": "*",
-		"cloudant": "*",
-		"body-parser": "1.13.3",
-		"request": "*",
-		"nano":"*",
-		"path": "*",
-		"json2csv": "*",
-		"fs": "*"
+		"log": "*"
 	},
 	"repository": {},
 	"engines": {
-		"node": "0.12.x"
+		"node": "4.x"
 	}
 }

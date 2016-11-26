@@ -1,0 +1,14 @@
+{
+	"name": "CSVUtils",
+	"version": "0.0.1",
+	"description": "CSV generation helper",
+	"dependencies": {
+		"json2csv": "*",
+		"log": "*",
+		"fs": "0.0.2"
+	},
+	"repository": {},
+	"engines": {
+		"node": "4.x"
+	}
+}
