@@ -9,3 +9,4 @@ applications:
   services:
   - fintanNodeRED-cloudantNoSQLDB
   - fintan-sso
+  - fintan-object-storage
