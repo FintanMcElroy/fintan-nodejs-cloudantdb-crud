@@ -17,25 +17,60 @@ module.exports = class Credentials {
      // Check in case we are running locally
      if (!baseConfig || Object.keys(baseConfig).length === 0) {
        // Get the local credentials
-       this.getCredentialsLocal((creds) => {
+       this.getCredentialsLocal('./creds/db_credentials.json', (creds) => {
          dbService.credentials = creds
-         log.info(`Host = ${dbService.credentials.host}`);
-         log.info(`Port = ${dbService.credentials.port}`);
-         log.info(`URL = ${dbService.credentials.url}`);
-         log.info(`username = ${dbService.credentials.username}`);
-         log.info(`password = ${dbService.credentials.password}`);
+         log.info(`Host = ${dbService.credentials.host}`)
+         log.info(`Port = ${dbService.credentials.port}`)
+         log.info(`URL = ${dbService.credentials.url}`)
+         log.info(`username = ${dbService.credentials.username}`)
+         log.info(`password = ${dbService.credentials.password}`)
          cb(dbService.credentials)
        })
      }
      // VCAP_SERVICES stored in Bluemix
      else {
        dbService = baseConfig[dbServiceName]
-       log.info(`Host = ${dbService.credentials.host}`);
-       log.info(`Port = ${dbService.credentials.port}`);
-       log.info(`URL = ${dbService.credentials.url}`);
-       log.info(`username = ${dbService.credentials.username}`);
-       log.info(`password = ${dbService.credentials.password}`);
+       log.info(`Host = ${dbService.credentials.host}`)
+       log.info(`Port = ${dbService.credentials.port}`)
+       log.info(`URL = ${dbService.credentials.url}`)
+       log.info(`username = ${dbService.credentials.username}`)
+       log.info(`password = ${dbService.credentials.password}`)
        cb(dbService.credentials)
+     }
+   }
+
+   getCredentialsOS (cb){
+     // Object Storage service credentials
+     const osServiceName = 'fintan-object-storage'
+     let osService = {}
+     let log = this.log
+
+     // Get the configuration internally defined in Bluemix
+     const baseOSConfig = this.appEnv.getServices(osServiceName)
+     // Check in case we are running locally
+     if (!baseOSConfig || Object.keys(baseOSConfig).length === 0) {
+       // Get the local credentials
+       this.getCredentialsLocal('./creds/os_credentials.json', (creds) => {
+         osService.credentials = creds
+         log.info(`auth_url = ${osService.credentials.auth_url}`)
+         log.info(`tenantId = ${osService.credentials.projectId}`)
+         log.info(`domainId = ${osService.credentials.domainId}`)
+         log.info(`username = ${osService.credentials.username}`)
+         log.info(`password = ${osService.credentials.password}`)
+         log.info(`region = ${osService.credentials.region}`)
+         cb(osService.credentials)
+       })
+     }
+     // VCAP_SERVICES stored in Bluemix
+     else {
+       osService = baseOSConfig[osServiceName]
+       log.info(`auth_url = ${osService.credentials.auth_url}`)
+       log.info(`tenantId = ${osService.credentials.projectId}`)
+       log.info(`domainId = ${osService.credentials.domainId}`)
+       log.info(`username = ${osService.credentials.username}`)
+       log.info(`password = ${osService.credentials.password}`)
+       log.info(`region = ${osService.credentials.region}`)
+       cb(osService.credentials)
      }
    }
 
@@ -65,9 +100,8 @@ module.exports = class Credentials {
      cb(ssoService.credentials)
    }
 
-   getCredentialsLocal(cb){
+   getCredentialsLocal(file, cb){
      const jsonfile = require('jsonfile')
-     const file = './creds/db_credentials.json'
      jsonfile.readFile(file, function(err, obj) {
        if (err) {
          obj.log.error("Error reading credentials file ", err)

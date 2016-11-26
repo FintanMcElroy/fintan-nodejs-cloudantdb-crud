@@ -2,6 +2,10 @@
 const json2csv = require('json2csv')
 const Log = require('log')
 const fs = require('fs')
+const pkgcloud = require('pkgcloud')
+const cfenv = require('cfenv')
+const appEnv = cfenv.getAppEnv()
+const Credentials = require('../creds/Credentials.js')
 
 module.exports = class CSVUtils {
   constructor(){
@@ -47,8 +51,63 @@ module.exports = class CSVUtils {
             if(files[index] === obj.download_filename)
               obj.log.info(`${obj.download_filename} is present`)
           }
+          this.storeFile(targetFile, obj.download_filename)
         })
       }) // end fs.writeFile
     }) // end json2csv
   }
+  // Store a file in Object Storage
+  storeFile(targetFilePath, targetFile) {
+    let obj = this
+    const creds = new Credentials(appEnv, this.log)
+    creds.getCredentialsOS((credsOS) => {
+      const config = {
+        provider: 'openstack',
+        useServiceCatalog: true,
+        useInternal: false,
+        keystoneAuthVersion: 'v3',
+        authUrl: credsOS.auth_url,
+        tenantId: credsOS.projectId,    //projectId from credentials
+        domainId: credsOS.domainId,
+        username: credsOS.username,
+        password: credsOS.password,
+        region: credsOS.region
+      }
+
+      const storageClient = pkgcloud.storage.createClient(config)
+
+      storageClient.auth((err) => {
+        if (err) {
+            obj.log.error(err)
+          }
+          else {
+            obj.log.info(storageClient._identity)
+          }
+        })
+
+        storageClient.createContainer({name: 'cloudant-csv-container'}, (err, container) => {
+            let csvFile, upload
+            if (err) {
+              obj.log.error(err)
+            }
+            else {
+              csvFile = fs.createReadStream(targetFilePath)
+
+              upload = storageClient.upload({
+                container: container.name,
+                remote: targetFile
+              })
+
+              upload.on('error', (err) => {
+                obj.log.error(err)
+              })
+
+              upload.on('success', (file) => {
+                obj.log.info(file.toJSON())
+              })
+              csvFile.pipe(upload)
+            } // end else
+          }) // end createContainer()
+    }) // end getCredentialsOS()
+  } // end storeFile()
 }

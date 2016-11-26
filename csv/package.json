@@ -5,7 +5,9 @@
 	"dependencies": {
 		"json2csv": "*",
 		"log": "*",
-		"fs": "0.0.2"
+		"fs": "0.0.2",
+		"cfenv": "1.0.x",
+		"pkgcloud": "*"
 	},
 	"repository": {},
 	"engines": {
