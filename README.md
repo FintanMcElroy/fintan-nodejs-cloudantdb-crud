@@ -1,8 +1,10 @@
-# fintan-node-js-cloudantdb-crud Overview
+# fintan-nodejs-cloudantdb-crud Overview
 
 This application uses the [Cloudant NoSQL Database service](https://console.ng.bluemix.net/catalog/services/cloudant-nosql-db) to demonstrate the operations of Create, Read, Update and Delete into database using the Node.js runtime. Cloudant node module is used for these operations. They can alternatively be done with API calls which returns a JSON.
 
 I forked this from IBM-Bluemix nodejs-cloudantdb-crud and re-orged the code to be more modular plus added SSO service
+
+Note this is linked to a toolchain fintan-nodejs-cloudantdb-crud
 
 
 ## Application Requirements
