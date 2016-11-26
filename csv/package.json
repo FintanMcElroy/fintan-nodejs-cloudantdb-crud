@@ -7,7 +7,7 @@
 		"log": "*",
 		"fs": "0.0.2",
 		"cfenv": "1.0.x",
-		"pkgcloud": "*"
+		"pkgcloud": "1.4.0"
 	},
 	"repository": {},
 	"engines": {
