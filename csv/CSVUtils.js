@@ -12,10 +12,41 @@ module.exports = class CSVUtils {
     this.log = new Log("info")
     this.download_filename = "database_names.csv"
   }
-
+  // Note that Cloud-native principles dictate that you should not rely on file system, which is why I am using Object Storage.
+  // However the pkgcloud module seems to use a file system as an intermediary between wrtie / read to Object Storage. You
+  // can stream directly to res but that doesn't create a CSV file that then can be saved as Excel
   getCSVFile(cb){
-    let fileName = __dirname + '\/' + this.download_filename
-    cb(fileName)
+    let obj = this
+    let creds = new Credentials(appEnv, this.log)
+    creds.getCredentialsOS((credsOS) => {
+      const config = {
+        provider: 'openstack',
+        useServiceCatalog: true,
+        useInternal: false,
+        keystoneAuthVersion: 'v3',
+        authUrl: credsOS.auth_url,
+        tenantId: credsOS.projectId,    //projectId from credentials
+        domainId: credsOS.domainId,
+        username: credsOS.username,
+        password: credsOS.password,
+        region: credsOS.region
+      }
+
+      let storageClient = pkgcloud.storage.createClient(config)
+      let fileAndPath = __dirname + '\/' + obj.download_filename
+      let writer = fs.createWriteStream(fileAndPath)
+      storageClient.download({
+        container: 'cloudant-csv-container',
+        remote: obj.download_filename
+      }).pipe(writer)
+      // We need to await the fs completion before invoking the callback to ensure the full file contents are there
+      writer.on('finish', () => {
+        obj.log.info(`file downloaded to ${fileAndPath}`)
+          cb(fileAndPath)
+      })
+      // Note if you wanted to avoid using file system you would assign storageclient.download to a variable 'download' and pass that back to the callback
+      // the callback would then do download.pipe(res) - but the output would just appear in browser and now saved as an Excel file
+    })
   }
 
   createCSVFile(rows){
@@ -59,7 +90,7 @@ module.exports = class CSVUtils {
   // Store a file in Object Storage
   storeFile(targetFilePath, targetFile) {
     let obj = this
-    const creds = new Credentials(appEnv, this.log)
+    let creds = new Credentials(appEnv, this.log)
     creds.getCredentialsOS((credsOS) => {
       const config = {
         provider: 'openstack',
@@ -74,7 +105,7 @@ module.exports = class CSVUtils {
         region: credsOS.region
       }
 
-      const storageClient = pkgcloud.storage.createClient(config)
+      let storageClient = pkgcloud.storage.createClient(config)
 
       storageClient.auth((err) => {
         if (err) {

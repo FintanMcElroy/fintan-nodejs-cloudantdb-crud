@@ -288,8 +288,8 @@ module.exports = class DBUtils {
    }
     // utility to get the CSV File
     getCSVFile(cb){
-      this.csvUtils.getCSVFile((fileName) => {
-        cb(fileName)
+      this.csvUtils.getCSVFile((download) => {
+        cb(download)
       })
     }
 }

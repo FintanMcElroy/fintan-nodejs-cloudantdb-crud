@@ -8,7 +8,13 @@
 	"dependencies": {
 		"express": "4.12.x",
 		"cfenv": "1.0.x",
-		"log": "*"
+		"log": "*",
+		"json2csv": "*",
+		"fs": "0.0.2",
+		"pkgcloud": "1.4.0",
+		"jsonfile": "*",
+		"cloudant": "1.6.2",
+		"request": "*"
 	},
 	"repository": {},
 	"engines": {
